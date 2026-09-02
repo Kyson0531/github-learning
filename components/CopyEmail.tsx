@@ -32,8 +32,8 @@ export function CopyEmailButton({
       className={
         className ||
         (compact
-          ? "rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-mist-300 transition hover:border-fiber-cyan/40 hover:text-fiber-cyan"
-          : "rounded-full border border-fiber-cyan/35 bg-fiber-cyan/10 px-5 py-2.5 text-sm font-medium text-fiber-cyan transition duration-300 hover:border-fiber-cyan/60 hover:bg-fiber-cyan/15 hover:text-mist-100")
+          ? "inline-flex h-9 items-center rounded-full border border-black/[0.08] bg-white/80 px-3.5 text-xs text-apple-secondary transition hover:border-apple-blue/35 hover:text-apple-blue"
+          : "inline-flex h-11 items-center justify-center rounded-full bg-apple-blue px-6 text-[1.0625rem] font-medium text-white transition duration-300 hover:bg-[#0077ED] active:scale-[0.98]")
       }
       aria-live="polite"
     >

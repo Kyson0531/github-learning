@@ -23,34 +23,36 @@ const cases = [
 
 export function Work() {
   return (
-    <SectionReveal id="work" className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-      <div className="mb-14 max-w-2xl">
-        <p className="font-mono text-xs uppercase tracking-editorial text-fiber-cyan/80">
+    <SectionReveal id="work" className="mx-auto max-w-content page-pad section-y">
+      <div className="mb-12 max-w-2xl md:mb-14">
+        <p className="text-xs font-medium uppercase tracking-editorial text-apple-secondary">
           工作
         </p>
-        <h2 className="mt-4 text-3xl tracking-tight text-mist-100 md:text-4xl">
+        <h2 className="mt-3 text-[1.5rem] font-semibold tracking-tight text-apple-ink md:text-[2rem]">
           工作
         </h2>
-        <p className="mt-4 text-sm leading-relaxed text-mist-300 md:text-base">
+        <p className="mt-4 text-[1.0625rem] leading-[1.55] text-apple-secondary">
           多为业务侧原型与流程实验，标「原型」表示可迭代，非成品承诺。
         </p>
       </div>
-      <ul className="grid gap-4 md:grid-cols-3">
+      <ul className="grid gap-4 md:grid-cols-3 md:gap-5">
         {cases.map((c) => (
           <li
             key={c.title}
-            className="rounded-2xl border border-white/[0.07] bg-ink-900/50 p-6 transition hover:border-white/15"
+            className="rounded-2xl border border-black/[0.08] bg-apple-surface p-6 shadow-soft transition hover:border-black/[0.12]"
           >
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-fiber-cyan/30 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-editorial text-fiber-cyan/90">
+              <span className="rounded-full border border-black/[0.08] bg-apple-bg px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-editorial text-apple-secondary">
                 {c.tag}
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-editorial text-mist-400">
+              <span className="text-[10px] uppercase tracking-editorial text-apple-secondary">
                 {c.meta}
               </span>
             </div>
-            <h3 className="mt-4 text-lg text-mist-100 md:text-xl">{c.title}</h3>
-            <p className="mt-3 text-sm leading-relaxed text-mist-300">
+            <h3 className="mt-4 text-lg font-semibold text-apple-ink md:text-xl">
+              {c.title}
+            </h3>
+            <p className="mt-3 text-[1.0625rem] leading-[1.55] text-apple-secondary">
               {c.summary}
             </p>
           </li>

@@ -7,16 +7,17 @@ import * as THREE from "three";
 
 type Ptr = React.MutableRefObject<{ x: number; y: number }>;
 
+/** Soft frosted glass for light Apple-like scene */
 const GLASS = {
-  transmission: 0.92,
-  thickness: 0.55,
-  ior: 1.18,
-  chromaticAberration: 0.008,
-  anisotropy: 0.02,
-  roughness: 0.08,
-  distortion: 0.04,
-  distortionScale: 0.12,
-  temporalDistortion: 0.03,
+  transmission: 0.97,
+  thickness: 0.38,
+  ior: 1.12,
+  chromaticAberration: 0.003,
+  anisotropy: 0.01,
+  roughness: 0.16,
+  distortion: 0.015,
+  distortionScale: 0.06,
+  temporalDistortion: 0.015,
   samples: 4,
   resolution: 320,
 } as const;
@@ -28,7 +29,6 @@ function isCoarsePointer() {
   );
 }
 
-/** Thin optical lens / disk — sole glass object */
 function GlassLens({
   pointer,
   mobile,
@@ -41,13 +41,11 @@ function GlassLens({
 
   useFrame((state, delta) => {
     const s = smoothed.current;
-    // Heavy damping — pointer barely moves the lens
     const lerp = 1 - Math.exp(-delta * 1.1);
     s.x += (pointer.current.x - s.x) * lerp;
     s.y += (pointer.current.y - s.y) * lerp;
 
     const t = state.clock.getElapsedTime();
-    // Slow drift: ~16s period
     const drift = (t * Math.PI * 2) / 16;
 
     if (group.current) {
@@ -55,9 +53,10 @@ function GlassLens({
         Math.PI / 2.35 + Math.sin(drift) * 0.06 + s.y * 0.08;
       group.current.rotation.y = Math.cos(drift * 0.85) * 0.1 + s.x * 0.1;
       group.current.rotation.z = Math.sin(drift * 0.7) * 0.04;
-      group.current.position.x = 1.15 + Math.sin(drift * 0.5) * 0.08 + s.x * 0.12;
-      group.current.position.y = 0.05 + Math.cos(drift * 0.55) * 0.06 + s.y * 0.08;
-      group.current.position.z = -0.35;
+      // Keep lens on side / back — ≤ ~35% of frame weight
+      group.current.position.x = 1.35 + Math.sin(drift * 0.5) * 0.06 + s.x * 0.1;
+      group.current.position.y = 0.08 + Math.cos(drift * 0.55) * 0.05 + s.y * 0.06;
+      group.current.position.z = -0.55;
     }
   });
 
@@ -65,8 +64,7 @@ function GlassLens({
   const resolution = mobile ? 224 : GLASS.resolution;
 
   return (
-    <group ref={group} scale={mobile ? 0.78 : 1}>
-      {/* Thin cylinder = optical disk / lens */}
+    <group ref={group} scale={mobile ? 0.7 : 0.88}>
       <mesh>
         <cylinderGeometry args={[1.05, 1.05, 0.12, 96]} />
         <MeshTransmissionMaterial
@@ -82,9 +80,9 @@ function GlassLens({
           distortion={GLASS.distortion}
           distortionScale={GLASS.distortionScale}
           temporalDistortion={GLASS.temporalDistortion}
-          color="#eef4fb"
-          attenuationColor="#9eb6d0"
-          attenuationDistance={1.6}
+          color="#ffffff"
+          attenuationColor="#e4eef8"
+          attenuationDistance={2.4}
         />
       </mesh>
     </group>
@@ -94,9 +92,10 @@ function GlassLens({
 function SoftLights() {
   return (
     <>
-      <ambientLight intensity={0.28} />
-      <directionalLight position={[3, 5, 2]} intensity={0.4} color="#c8d8ef" />
-      <pointLight position={[-2.5, 0.5, 1.5]} intensity={0.22} color="#5eead4" />
+      <ambientLight intensity={1.05} />
+      <directionalLight position={[4, 6, 3]} intensity={0.9} color="#ffffff" />
+      <directionalLight position={[-3, 3, 2]} intensity={0.4} color="#f0f5fb" />
+      <pointLight position={[2.5, 1.2, 2]} intensity={0.25} color="#c8daf0" />
     </>
   );
 }
@@ -105,7 +104,7 @@ function Scene({ pointer, mobile }: { pointer: Ptr; mobile: boolean }) {
   return (
     <>
       <SoftLights />
-      <Environment preset="city" environmentIntensity={0.55} />
+      <Environment preset="apartment" environmentIntensity={1.05} />
       <GlassLens pointer={pointer} mobile={mobile} />
     </>
   );
@@ -162,7 +161,9 @@ export function HeroCanvas() {
         className="pointer-events-none absolute inset-0 -z-10"
         aria-hidden
       >
-        <div className="absolute right-[8%] top-1/2 h-[38vmin] w-[38vmin] -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_35%_30%,rgba(200,220,240,0.22),rgba(94,234,212,0.06)_45%,transparent_70%)] blur-2xl" />
+        {/* CSS frosted circle on light bg — side placement */}
+        <div className="absolute right-[6%] top-1/2 h-[32vmin] w-[32vmin] max-w-[35%] -translate-y-1/2 rounded-full border border-black/[0.08] bg-white/55 shadow-soft backdrop-blur-xl" />
+        <div className="absolute right-[4%] top-[48%] h-[40vmin] w-[40vmin] max-w-[35%] -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_35%_30%,rgba(255,255,255,0.9),rgba(210,225,240,0.35)_45%,transparent_70%)] blur-xl" />
       </div>
     );
   }
@@ -183,12 +184,13 @@ export function HeroCanvas() {
         frameloop={visible ? "always" : "never"}
         camera={{ position: [0, 0.1, 5.4], fov: 40, near: 0.1, far: 40 }}
       >
-        <color attach="background" args={["#0A0C10"]} />
-        <fog attach="fog" args={["#0A0C10", 7, 18]} />
+        <color attach="background" args={["#F5F5F7"]} />
+        <fog attach="fog" args={["#F5F5F7", 10, 24]} />
         <Scene pointer={pointer} mobile={mobile} />
       </Canvas>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_45%,transparent_0%,rgba(10,12,16,0.35)_55%,rgba(10,12,16,0.92)_100%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950/50 via-transparent to-ink-950" />
+      {/* Soft light fade only — no dark wash */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-apple-bg via-apple-bg/40 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-apple-bg" />
     </div>
   );
 }

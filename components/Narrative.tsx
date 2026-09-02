@@ -17,17 +17,17 @@ const beats = [
 
 export function Narrative() {
   return (
-    <SectionReveal id="story" className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-      <p className="font-mono text-xs uppercase tracking-editorial text-fiber-cyan/80">
+    <SectionReveal id="story" className="mx-auto max-w-content page-pad section-y">
+      <p className="text-xs font-medium uppercase tracking-editorial text-apple-secondary">
         叙事
       </p>
       <ul className="mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
         {beats.map((b) => (
-          <li key={b.title} className="border-t border-white/10 pt-6">
-            <h2 className="text-xl tracking-tight text-mist-100 md:text-2xl">
+          <li key={b.title} className="border-t border-black/[0.08] pt-6">
+            <h2 className="text-[1.5rem] font-semibold tracking-tight text-apple-ink md:text-[2rem]">
               {b.title}
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-mist-300 md:text-base">
+            <p className="mt-3 text-[1.0625rem] leading-[1.55] text-apple-secondary">
               {b.body}
             </p>
           </li>
