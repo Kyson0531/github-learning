@@ -1,268 +1,209 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Environment, MeshTransmissionMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
-type ProgressRef = React.MutableRefObject<number>;
 type Ptr = React.MutableRefObject<{ x: number; y: number }>;
 
-const FIBER_COLORS = ["#5eead4", "#60a5fa", "#a78bfa", "#5eead4", "#60a5fa"];
+/** Clear refractive glass — product photography clarity */
+const GLASS = {
+  transmission: 1,
+  thickness: 0.72,
+  ior: 1.4,
+  chromaticAberration: 0.016,
+  anisotropy: 0.015,
+  roughness: 0.035,
+  metalness: 0.015,
+  clearcoat: 1,
+  clearcoatRoughness: 0.06,
+  distortion: 0.1,
+  distortionScale: 0.2,
+  temporalDistortion: 0.015,
+  samples: 8,
+  resolution: 640,
+} as const;
 
-function makeCableCurve(seed: number, index: number): THREE.CatmullRomCurve3 {
-  const pts: THREE.Vector3[] = [];
-  const n = 8;
-  const baseAngle = (index / 5) * Math.PI * 2;
-  for (let i = 0; i < n; i++) {
-    const t = i / (n - 1);
-    const y = -2.4 + t * 4.8;
-    const swirl = baseAngle + t * Math.PI * 1.4 + seed * 0.4;
-    const r = 1.1 + Math.sin(t * Math.PI) * 1.6 + (seed % 3) * 0.25;
-    pts.push(
-      new THREE.Vector3(
-        Math.cos(swirl) * r + Math.sin(seed + t * 3) * 0.35,
-        y,
-        Math.sin(swirl) * r + Math.cos(seed + t * 2) * 0.35
-      )
-    );
-  }
-  return new THREE.CatmullRomCurve3(pts);
-}
-
-function FiberCable({
-  curve,
-  color,
-  baseSpeed,
-  progressRef,
-}: {
-  curve: THREE.CatmullRomCurve3;
-  color: string;
-  baseSpeed: number;
-  progressRef: ProgressRef;
-}) {
-  const glowRef = useRef<THREE.Mesh>(null);
-  const glow2Ref = useRef<THREE.Mesh>(null);
-  const matRef = useRef<THREE.MeshBasicMaterial>(null);
-  const glowMatRef = useRef<THREE.MeshBasicMaterial>(null);
-  const tubeGeo = useMemo(
-    () => new THREE.TubeGeometry(curve, 64, 0.012, 6, false),
-    [curve]
-  );
-
-  useFrame((state) => {
-    const p = progressRef.current;
-    const speedMul = 0.65 + p * 1.55;
-    const t = state.clock.getElapsedTime();
-    const u = (t * baseSpeed * speedMul) % 1;
-    const u2 = (t * baseSpeed * speedMul * 0.7 + 0.45) % 1;
-    const pt = curve.getPointAt(u);
-    const pt2 = curve.getPointAt(u2);
-    if (glowRef.current) glowRef.current.position.copy(pt);
-    if (glow2Ref.current) glow2Ref.current.position.copy(pt2);
-
-    const cableOpacity = 0.16 + p * 0.28;
-    const glowOpacity = 0.7 + p * 0.28;
-    if (matRef.current) matRef.current.opacity = cableOpacity;
-    if (glowMatRef.current) glowMatRef.current.opacity = glowOpacity;
-
-    const scale = 0.85 + p * 0.55;
-    if (glowRef.current) glowRef.current.scale.setScalar(scale);
-  });
-
+function isCoarsePointer() {
+  if (typeof window === "undefined") return false;
   return (
-    <group>
-      <mesh geometry={tubeGeo}>
-        <meshBasicMaterial
-          ref={matRef}
-          color={color}
-          transparent
-          opacity={0.22}
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-      <mesh ref={glowRef}>
-        <sphereGeometry args={[0.055, 12, 12]} />
-        <meshBasicMaterial
-          ref={glowMatRef}
-          color={color}
-          transparent
-          opacity={0.95}
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-      <mesh ref={glow2Ref}>
-        <sphereGeometry args={[0.035, 10, 10]} />
-        <meshBasicMaterial
-          color="#ffffff"
-          transparent
-          opacity={0.7}
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-    </group>
+    window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768
   );
 }
 
-function ParticleField({ progressRef }: { progressRef: ProgressRef }) {
-  const pointsRef = useRef<THREE.Points>(null);
-  const matRef = useRef<THREE.PointsMaterial>(null);
-  const count = 320;
+/** Soft pastel mesh for refraction — product backdrop, not a second hero */
+function PastelBackdrop() {
+  const texture = useMemo(() => {
+    const size = 512;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d")!;
 
-  const { positions, colors } = useMemo(() => {
-    const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
-    const palette = [
-      new THREE.Color("#5eead4"),
-      new THREE.Color("#60a5fa"),
-      new THREE.Color("#a78bfa"),
-      new THREE.Color("#fbbf24"),
+    const g = ctx.createLinearGradient(0, 0, size, size);
+    g.addColorStop(0, "#F5F5F7");
+    g.addColorStop(0.3, "#E6EFFA");
+    g.addColorStop(0.55, "#F4E8F1");
+    g.addColorStop(0.8, "#E8F4F0");
+    g.addColorStop(1, "#F5F5F7");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, size, size);
+
+    const blobs: Array<{
+      x: number;
+      y: number;
+      r: number;
+      color: string;
+    }> = [
+      { x: 0.35, y: 0.28, r: 0.42, color: "rgba(170, 205, 255, 0.58)" },
+      { x: 0.68, y: 0.32, r: 0.38, color: "rgba(255, 200, 220, 0.48)" },
+      { x: 0.5, y: 0.62, r: 0.45, color: "rgba(190, 230, 220, 0.5)" },
+      { x: 0.22, y: 0.68, r: 0.32, color: "rgba(220, 210, 255, 0.4)" },
+      { x: 0.78, y: 0.7, r: 0.34, color: "rgba(255, 230, 190, 0.42)" },
     ];
 
-    for (let i = 0; i < count; i++) {
-      const i3 = i * 3;
-      const u = Math.random();
-      const v = Math.random();
-      const w = Math.random();
-      const r = Math.pow(u, 0.55) * 3.6;
-      const theta = v * Math.PI * 2;
-      const y = (w - 0.5) * 5.2;
-      positions[i3] = Math.cos(theta) * r * (0.7 + Math.random() * 0.5);
-      positions[i3 + 1] = y;
-      positions[i3 + 2] = Math.sin(theta) * r * (0.7 + Math.random() * 0.5);
-
-      const c = palette[i % palette.length];
-      const dim = 0.45 + Math.random() * 0.55;
-      colors[i3] = c.r * dim;
-      colors[i3 + 1] = c.g * dim;
-      colors[i3 + 2] = c.b * dim;
+    for (const b of blobs) {
+      const cx = b.x * size;
+      const cy = b.y * size;
+      const radius = b.r * size;
+      const rg = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+      rg.addColorStop(0, b.color);
+      rg.addColorStop(1, "rgba(245, 245, 247, 0)");
+      ctx.fillStyle = rg;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
     }
-    return { positions, colors };
+
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.needsUpdate = true;
+    return tex;
   }, []);
 
-  useFrame((state) => {
-    if (!pointsRef.current) return;
-    const p = progressRef.current;
-    const t = state.clock.getElapsedTime();
-    pointsRef.current.rotation.y = t * (0.03 + p * 0.08);
-    pointsRef.current.rotation.x = Math.sin(t * 0.2) * 0.04 * p;
-    if (matRef.current) {
-      matRef.current.opacity = 0.45 + p * 0.45;
-      matRef.current.size = 0.022 + p * 0.018;
-    }
-  });
+  useEffect(() => {
+    return () => {
+      texture.dispose();
+    };
+  }, [texture]);
 
   return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-        <bufferAttribute attach="attributes-color" args={[colors, 3]} />
-      </bufferGeometry>
-      <pointsMaterial
-        ref={matRef}
-        size={0.028}
-        vertexColors
-        transparent
-        opacity={0.75}
-        sizeAttenuation
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
-      />
-    </points>
+    <mesh position={[0, -0.55, -2.4]} scale={[7.2, 5.2, 1]}>
+      <planeGeometry args={[1, 1]} />
+      <meshBasicMaterial map={texture} toneMapped={false} />
+    </mesh>
   );
 }
 
-function Scene({
+function GlassLens({
   pointer,
-  progressRef,
+  mobile,
 }: {
   pointer: Ptr;
-  progressRef: ProgressRef;
+  mobile: boolean;
 }) {
-  const root = useRef<THREE.Group>(null);
+  const group = useRef<THREE.Group>(null);
   const smoothed = useRef({ x: 0, y: 0 });
-  const { scene } = useThree();
-
-  const cables = useMemo(
-    () =>
-      FIBER_COLORS.map((color, i) => ({
-        curve: makeCableCurve(i * 1.7 + 0.3, i),
-        color,
-        speed: 0.12 + i * 0.035,
-      })),
-    []
-  );
 
   useFrame((state, delta) => {
-    const p = progressRef.current;
     const s = smoothed.current;
-    const lerp = 1 - Math.exp(-delta * 4.5);
+    const lerp = 1 - Math.exp(-delta * 0.95);
     s.x += (pointer.current.x - s.x) * lerp;
     s.y += (pointer.current.y - s.y) * lerp;
 
-    if (root.current) {
-      const spin = p * 0.55;
-      root.current.rotation.y =
-        s.x * 0.28 + spin + state.clock.getElapsedTime() * (0.02 + p * 0.06);
-      root.current.rotation.x = s.y * 0.16 + p * 0.12;
-      root.current.position.x = s.x * 0.35;
-      root.current.position.y = s.y * 0.2;
-      root.current.scale.setScalar(0.92 + p * 0.18);
-    }
+    const t = state.clock.getElapsedTime();
+    const drift = (t * Math.PI * 2) / 22;
 
-    const fog = scene.fog as THREE.Fog | null;
-    if (fog) {
-      fog.near = 4.5 - p * 1.2;
-      fog.far = 14 - p * 3;
+    if (group.current) {
+      // Gentle product float — light motion only
+      group.current.rotation.x =
+        Math.PI / 2.4 + Math.sin(drift) * 0.045 + s.y * 0.05;
+      group.current.rotation.y = Math.cos(drift * 0.8) * 0.07 + s.x * 0.06;
+      group.current.rotation.z = Math.sin(drift * 0.65) * 0.03;
+      // Lower/center-back — ~50–60% of hero as product slot
+      group.current.position.x = Math.sin(drift * 0.4) * 0.04 + s.x * 0.06;
+      group.current.position.y =
+        -0.72 + Math.cos(drift * 0.5) * 0.035 + s.y * 0.04;
+      group.current.position.z = -0.2;
     }
   });
 
+  const samples = mobile ? 4 : GLASS.samples;
+  const resolution = mobile ? 320 : GLASS.resolution;
+
   return (
-    <group ref={root}>
-      <ParticleField progressRef={progressRef} />
-      {cables.map((c, i) => (
-        <FiberCable
-          key={i}
-          curve={c.curve}
-          color={c.color}
-          baseSpeed={c.speed}
-          progressRef={progressRef}
+    <group ref={group} scale={mobile ? 1.05 : 1.38}>
+      <mesh>
+        <cylinderGeometry args={[1.12, 1.12, 0.2, 96]} />
+        <MeshTransmissionMaterial
+          backside={!mobile}
+          samples={samples}
+          resolution={resolution}
+          transmission={GLASS.transmission}
+          thickness={GLASS.thickness}
+          ior={GLASS.ior}
+          chromaticAberration={GLASS.chromaticAberration}
+          anisotropy={GLASS.anisotropy}
+          roughness={GLASS.roughness}
+          metalness={GLASS.metalness}
+          clearcoat={GLASS.clearcoat}
+          clearcoatRoughness={GLASS.clearcoatRoughness}
+          distortion={GLASS.distortion}
+          distortionScale={GLASS.distortionScale}
+          temporalDistortion={GLASS.temporalDistortion}
+          color="#ffffff"
+          attenuationColor="#eef4fb"
+          attenuationDistance={3.5}
         />
-      ))}
-      <ambientLight intensity={0.15} />
+      </mesh>
     </group>
   );
 }
 
-function CameraRig({ progressRef }: { progressRef: ProgressRef }) {
-  const { camera } = useThree();
-  useEffect(() => {
-    camera.position.set(0, 0.15, 5.4);
-  }, [camera]);
-
-  useFrame((_, delta) => {
-    const p = progressRef.current;
-    // Scrub: pull in then ease — video-scrub feel
-    const targetZ = 5.6 - p * 1.35 + Math.sin(p * Math.PI) * 0.15;
-    const targetY = 0.15 + p * 0.25;
-    camera.position.z += (targetZ - camera.position.z) * (1 - Math.exp(-delta * 5));
-    camera.position.y += (targetY - camera.position.y) * (1 - Math.exp(-delta * 5));
-    camera.lookAt(0, 0, 0);
-  });
-
-  return null;
+function SoftLights() {
+  return (
+    <>
+      <ambientLight intensity={1.2} />
+      <directionalLight position={[3, 5, 5]} intensity={1.2} color="#ffffff" />
+      <directionalLight position={[-3, 3, 3]} intensity={0.5} color="#f5f8fc" />
+      <pointLight position={[1.5, 1.2, 2.6]} intensity={0.6} color="#ffffff" />
+      <pointLight position={[-1.2, 0.4, 2]} intensity={0.32} color="#d4e4f8" />
+    </>
+  );
 }
 
-export function HeroCanvas({ progressRef }: { progressRef: ProgressRef }) {
+function Scene({ pointer, mobile }: { pointer: Ptr; mobile: boolean }) {
+  return (
+    <>
+      <SoftLights />
+      <Environment preset="apartment" environmentIntensity={0.9} />
+      <PastelBackdrop />
+      <GlassLens pointer={pointer} mobile={mobile} />
+    </>
+  );
+}
+
+export function HeroCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const pointer = useRef({ x: 0, y: 0 });
   const [visible, setVisible] = useState(true);
   const [reduced, setReduced] = useState(false);
+  const [mobile, setMobile] = useState(false);
 
   useEffect(() => {
-    setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const onChange = () => setReduced(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    const update = () => setMobile(isCoarsePointer());
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   useEffect(() => {
@@ -291,27 +232,43 @@ export function HeroCanvas({ progressRef }: { progressRef: ProgressRef }) {
     return (
       <div
         ref={containerRef}
-        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,_rgba(94,234,212,0.14),_transparent_55%),radial-gradient(ellipse_at_80%_20%,_rgba(96,165,250,0.12),_transparent_42%),radial-gradient(ellipse_at_20%_80%,_rgba(167,139,250,0.08),_transparent_40%)]"
+        className="pointer-events-none absolute inset-0 -z-10"
         aria-hidden
-      />
+      >
+        {/* Pastel mesh behind product slot */}
+        <div className="absolute bottom-[8%] left-1/2 h-[58vmin] w-[72vmin] max-w-[70%] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_40%_40%,rgba(170,205,255,0.5),transparent_68%)] blur-3xl" />
+        <div className="absolute bottom-[4%] left-[42%] h-[42vmin] w-[48vmin] max-w-[55%] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_50%_50%,rgba(255,200,220,0.4),transparent_70%)] blur-3xl" />
+        <div className="absolute bottom-[10%] left-[58%] h-[36vmin] w-[40vmin] max-w-[45%] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_45%_55%,rgba(190,230,220,0.42),transparent_68%)] blur-2xl" />
+        {/* CSS frosted lens — lower/center product slot */}
+        <div className="absolute bottom-[10%] left-1/2 h-[min(52vmin,420px)] w-[min(52vmin,420px)] -translate-x-1/2 rounded-full border border-white/65 bg-white/50 shadow-soft backdrop-blur-xl backdrop-saturate-150" />
+        <div className="absolute bottom-[12%] left-1/2 h-[min(58vmin,460px)] w-[min(58vmin,460px)] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_35%_30%,rgba(255,255,255,0.92),rgba(210,225,240,0.32)_48%,transparent_72%)] blur-xl" />
+      </div>
     );
   }
 
   return (
-    <div ref={containerRef} className="absolute inset-0 -z-10" aria-hidden>
+    <div
+      ref={containerRef}
+      className="pointer-events-none absolute inset-0 -z-10"
+      aria-hidden
+    >
       <Canvas
-        dpr={[1, 1.75]}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        dpr={[1, 1.5]}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance",
+        }}
         frameloop={visible ? "always" : "never"}
-        camera={{ fov: 45, near: 0.1, far: 50 }}
+        camera={{ position: [0, -0.15, 5.2], fov: 38, near: 0.1, far: 40 }}
       >
-        <color attach="background" args={["#07080b"]} />
-        <fog attach="fog" args={["#07080b", 4.5, 14]} />
-        <CameraRig progressRef={progressRef} />
-        <Scene pointer={pointer} progressRef={progressRef} />
+        <color attach="background" args={["#F5F5F7"]} />
+        <fog attach="fog" args={["#F5F5F7", 14, 30]} />
+        <Scene pointer={pointer} mobile={mobile} />
       </Canvas>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(7,8,11,0.35)_70%,rgba(7,8,11,0.85)_100%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950/30 via-transparent to-ink-950" />
+      {/* Soft fades — keep copy readable, product lens clear */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-apple-bg via-transparent to-transparent opacity-70" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[18%] bg-gradient-to-t from-apple-bg to-transparent" />
     </div>
   );
 }

@@ -1,41 +1,23 @@
-# Kyson Wang / 王化康 — Personal Portfolio
+# Wang Huakang / Kyson — Personal Site
 
-Single-page personal site for **Kyson Wang (王化康)** — foreign-trade and optical-fiber operations at Sightes.
+Restrained glass personal site for Kyson (Wang Huakang) — Sightes foreign-trade / optical-fiber ops.
+
+Branch feature/glass-hero: one thin optical lens (MeshTransmissionMaterial), DOM-first Chinese IA, no BEAT/timeline chrome.
 
 ## Stack
+- Next.js App Router + TypeScript + Tailwind
+- GSAP + ScrollTrigger (light fade-up)
+- Lenis smooth scroll (prefers-reduced-motion)
+- Three.js + R3F + Drei (single glass lens)
 
-- **Next.js** (App Router) + TypeScript + Tailwind CSS
-- **GSAP** + ScrollTrigger — section reveals (transform / opacity only)
-- **Lenis** — smooth scroll, synced to the GSAP ticker
-- **Three.js** + **React Three Fiber** + **Drei** — hero fiber-optic / light-particle canvas
-- Accessibility: `prefers-reduced-motion` disables canvas + smooth scroll; canvas pauses when off-screen; DPR capped
-
-## Information architecture
-
-1. **Hero** — name, bilingual title, R3F abstract fiber field
-2. **About** — Sightes / trade + fiber ops
-3. **Work** — 2–3 placeholder case studies (clearly labeled)
-4. **Skills** — Outlook, Excel, supply-chain ops (not a fake React list)
-5. **Contact** — email, GitHub, X
-
-## Run locally
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-## Production build
-
-```bash
-npm run build
-npm start
-```
+## IA
+1. Nav
+2. Hero
+3. Narrative
+4. Work
+5. Method
+6. Contact + Footer
 
 ## Contact
-
-- Email: kyson.wang@sightestech.com
-- GitHub: [Kyson0531](https://github.com/Kyson0531)
-- X: [@Kyson0531](https://x.com/Kyson0531)
+- 858154849@qq.com
+- https://github.com/Kyson0531
