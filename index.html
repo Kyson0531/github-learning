@@ -7,7 +7,7 @@
   <title>王化康 · Kyson — Sightes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Instrument+Serif:ital@0;1&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -15,172 +15,237 @@
 
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="#top" aria-label="王化康 · Kyson">
+      <a class="brand vf" href="#top" aria-label="王化康 · Kyson">
         <span class="brand-mark" aria-hidden="true"></span>
-        <span class="brand-text">王化康 · Kyson</span>
+        王化康 · KYSON
       </a>
+
+      <button type="button" class="header-email" data-copy-email data-email="858154849@qq.com" aria-live="polite">
+        <span class="email-pill-label">Copy email</span>
+        <span class="email-pill-done" hidden>已复制 ✓</span>
+      </button>
+
+      <p class="avail-chip" aria-label="可联系">
+        <span class="avail-dot" aria-hidden="true"></span>
+        可联系 · Open
+      </p>
+
       <nav class="nav" aria-label="主导航">
-        <a href="#story">叙事</a>
         <a href="#work">工作</a>
-        <a href="#method">方法</a>
+        <a href="#services">方法</a>
+        <a href="#narrative">叙事</a>
         <a href="#contact">联系</a>
       </nav>
-      <button type="button" class="email-pill" data-copy-email data-email="858154849@qq.com" aria-live="polite">
-        <span class="email-pill-label">复制邮箱</span>
-        <span class="email-pill-done" hidden>已复制</span>
-      </button>
     </div>
   </header>
 
   <main id="main">
+    <!-- 1. HERO -->
     <section id="top" class="hero" aria-labelledby="hero-title">
-      <div class="hero-inner reveal-hero">
-        <p class="eyebrow">Sightes（赛特斯）｜外贸运营 · 光纤产品</p>
-        <h1 id="hero-title">王化康 · Kyson</h1>
-        <p class="hero-sub">把产品、客户与交付连成一条清晰链路。</p>
+      <div class="hero-blob" aria-hidden="true">
+        <div class="blob-shape"></div>
+        <span class="sticker sticker-cyan">光纤</span>
+        <span class="sticker sticker-lime">外贸</span>
+        <span class="sticker sticker-pink">链路</span>
+      </div>
+
+      <div class="hero-copy reveal-hero">
+        <p class="hero-kicker">Sightes（赛特斯）</p>
+        <h1 id="hero-title" class="hero-name">
+          <span class="vf hero-name-display">WANG HUAKANG</span>
+          <span class="hero-name-cn serif">王化康 · <em>Kyson</em></span>
+        </h1>
+
+        <ul class="role-stack" aria-label="角色">
+          <li><a href="#work">外贸运营</a></li>
+          <li><a href="#work">光纤产品</a></li>
+          <li><a href="#services">流程整理</a></li>
+        </ul>
+
+        <p class="hero-lede serif">把产品、客户与交付连成一条<em>清晰链路</em>。</p>
+        <p class="hero-sub">三拍：连接 · 行动 · 判断</p>
         <p class="hero-body">
           我在外贸一线处理订单、样品与仓配信息；关心的是信息能否及时变成行动，而不是堆更多工具。先把业务路径摸清，再谈系统和 AI。
         </p>
         <div class="hero-cta">
-          <button type="button" class="btn btn-primary" data-copy-email data-email="858154849@qq.com">
+          <button type="button" class="btn btn-red" data-copy-email data-email="858154849@qq.com">
             <span class="email-pill-label">复制邮箱</span>
             <span class="email-pill-done" hidden>已复制</span>
           </button>
-          <a class="btn btn-ghost" href="#work">查看工作</a>
+          <a class="btn btn-outline" href="#work">全部工作</a>
         </div>
       </div>
     </section>
 
-    <section id="story" class="section story" aria-labelledby="story-title">
-      <div class="section-inner">
-        <header class="section-head reveal-block">
-          <p class="eyebrow">叙事</p>
-          <h2 id="story-title">三拍：连接 · 行动 · 判断</h2>
-        </header>
-        <ol class="story-beats">
-          <li class="beat reveal-beat" style="--i: 0">
-            <span class="beat-index" aria-hidden="true">01</span>
-            <h3>连接：产品 · 客户 · 交付</h3>
-            <p>
-              光纤与外贸的链路很长：询盘、样品、订单、装箱、出货。我习惯把每一段对上真实责任人与节点，减少「信息在群里漂、货在仓里等」的空档。连接做得好，交付才稳。
-            </p>
-          </li>
-          <li class="beat reveal-beat" style="--i: 1">
-            <span class="beat-index" aria-hidden="true">02</span>
-            <h3>信息 → 行动</h3>
-            <p>
-              表格、邮件、单据本身不是工作成果——能推动下一步才是。我会把散落的状态收成可扫一眼的结构：谁该动、卡在哪、今天能推进什么。少一层转述，多一步确认。
-            </p>
-          </li>
-          <li class="beat reveal-beat" style="--i: 2">
-            <span class="beat-index" aria-hidden="true">03</span>
-            <h3>先懂业务，再选工具与 AI</h3>
-            <p>
-              工具和 AI 是放大器。若流程本身含糊，自动化只会放大混乱。我先对齐业务语言与约束，再决定要不要上表单、看板或助手——宁可原型小、跑通，也不堆花哨。
-            </p>
-          </li>
-        </ol>
+    <!-- 2. MARQUEE / TICKER -->
+    <aside class="ticker" aria-hidden="true">
+      <div class="marquee">
+        <div class="marquee-track">
+          <span class="vf">产品·客户·交付&nbsp;&nbsp;/&nbsp;&nbsp;信息→行动&nbsp;&nbsp;/&nbsp;&nbsp;业务先于工具&nbsp;&nbsp;·&nbsp;&nbsp;王化康 · KYSON&nbsp;&nbsp;·&nbsp;&nbsp;</span>
+          <span class="vf">产品·客户·交付&nbsp;&nbsp;/&nbsp;&nbsp;信息→行动&nbsp;&nbsp;/&nbsp;&nbsp;业务先于工具&nbsp;&nbsp;·&nbsp;&nbsp;王化康 · KYSON&nbsp;&nbsp;·&nbsp;&nbsp;</span>
+        </div>
       </div>
-    </section>
+    </aside>
 
+    <!-- 3. WORK -->
     <section id="work" class="section work" aria-labelledby="work-title">
       <div class="section-inner">
         <header class="section-head reveal-block">
-          <p class="eyebrow">工作 / Selected work</p>
-          <h2 id="work-title">工作</h2>
-          <p class="section-lead">
-            以下多为业务侧原型与流程实验，标「原型」表示可迭代，非成品承诺。
-          </p>
+          <p class="eyebrow vf">SELECTED WORK</p>
+          <h2 id="work-title" class="serif">工作 / <em>原型</em></h2>
+          <p class="section-lead">以下多为业务侧原型与流程实验，标「原型」表示可迭代，非成品承诺。</p>
         </header>
+
         <ul class="work-grid">
           <li class="work-card reveal-card" style="--i: 0">
             <a class="work-card-link" href="#work" style="view-transition-name: project-sample-warehouse">
+              <div class="work-media work-media--a" aria-hidden="true">
+                <span class="work-title-outline vf">样品仓状态一览</span>
+              </div>
               <div class="work-meta">
                 <span class="tag">原型</span>
                 <span class="tag tag-muted">流程</span>
                 <span class="tag tag-muted">光纤</span>
               </div>
-              <h3>样品仓状态一览</h3>
-              <p>把样品在库/借出/待寄收成一张表，减少口头对账。</p>
+              <p class="work-desc">把样品在库/借出/待寄收成一张表，减少口头对账。</p>
             </a>
           </li>
           <li class="work-card reveal-card" style="--i: 1">
             <a class="work-card-link" href="#work" style="view-transition-name: project-packing-checklist">
+              <div class="work-media work-media--b" aria-hidden="true">
+                <span class="work-title-outline vf">装箱信息核对清单</span>
+              </div>
               <div class="work-meta">
                 <span class="tag">原型</span>
                 <span class="tag tag-muted">流程</span>
                 <span class="tag tag-muted">出货</span>
               </div>
-              <h3>装箱信息核对清单</h3>
-              <p>订单与箱单字段对齐，出货前少一次漏项。</p>
+              <p class="work-desc">订单与箱单字段对齐，出货前少一次漏项。</p>
             </a>
           </li>
           <li class="work-card reveal-card" style="--i: 2">
             <a class="work-card-link" href="#work" style="view-transition-name: project-inquiry-board">
+              <div class="work-media work-media--c" aria-hidden="true">
+                <span class="work-title-outline vf">询盘跟进节奏板</span>
+              </div>
               <div class="work-meta">
                 <span class="tag">原型</span>
                 <span class="tag tag-muted">跟进</span>
                 <span class="tag tag-muted">客户</span>
               </div>
-              <h3>询盘跟进节奏板</h3>
-              <p>按客户与阶段看跟进，避免只靠聊天记录。</p>
+              <p class="work-desc">按客户与阶段看跟进，避免只靠聊天记录。</p>
             </a>
           </li>
         </ul>
+
+        <p class="work-cta-row">
+          <a class="btn btn-outline" href="#work">全部工作</a>
+        </p>
       </div>
     </section>
 
-    <section id="method" class="section method" aria-labelledby="method-title">
+    <!-- 4. SERVICES / METHODS (rotated cards) -->
+    <section id="services" class="section services" aria-labelledby="services-title">
       <div class="section-inner">
         <header class="section-head reveal-block">
-          <p class="eyebrow">方法</p>
-          <h2 id="method-title">方法</h2>
+          <p class="eyebrow vf">METHODS</p>
+          <h2 id="services-title" class="serif">方法 / <em>怎么做</em></h2>
         </header>
-        <ol class="principles">
-          <li class="principle reveal-row" style="--i: 0">
-            <span class="principle-num" aria-hidden="true">01</span>
-            <p>先画链路，再碰界面。</p>
-          </li>
-          <li class="principle reveal-row" style="--i: 1">
-            <span class="principle-num" aria-hidden="true">02</span>
-            <p>字段与状态说人话，和一线用语一致。</p>
-          </li>
-          <li class="principle reveal-row" style="--i: 2">
-            <span class="principle-num" aria-hidden="true">03</span>
-            <p>原型只验证一件事：能否推动下一步。</p>
-          </li>
-          <li class="principle reveal-row" style="--i: 3">
-            <span class="principle-num" aria-hidden="true">04</span>
-            <p>AI 只接在已清晰的节点上，不替代判断。</p>
-          </li>
+
+        <div class="service-cards" role="list">
+          <article class="service-card reveal-card" style="--i: 0; --rot: -3deg" role="listitem">
+            <p class="service-eyebrow vf">01 · 连接链路</p>
+            <h3 class="vf">连接链路</h3>
+            <p>先画链路，再碰界面。把每一段对上真实责任人与节点。</p>
+            <ul class="service-tags">
+              <li>询盘</li>
+              <li>样品</li>
+              <li>出货</li>
+            </ul>
+          </article>
+          <article class="service-card reveal-card" style="--i: 1; --rot: 2.5deg" role="listitem">
+            <p class="service-eyebrow vf">02 · 信息变行动</p>
+            <h3 class="vf">信息变行动</h3>
+            <p>字段与状态说人话，和一线用语一致。能推动下一步才是成果。</p>
+            <ul class="service-tags">
+              <li>状态</li>
+              <li>核对</li>
+              <li>节奏</li>
+            </ul>
+          </article>
+          <article class="service-card reveal-card" style="--i: 2; --rot: -2deg" role="listitem">
+            <p class="service-eyebrow vf">03 · 业务先于工具</p>
+            <h3 class="vf">业务先于工具</h3>
+            <p>原型只验证一件事：能否推动下一步。AI 只接在已清晰的节点上。</p>
+            <ul class="service-tags">
+              <li>原型</li>
+              <li>约束</li>
+              <li>AI</li>
+            </ul>
+          </article>
+        </div>
+
+        <ol class="principles reveal-block">
+          <li style="--i: 0"><span class="principle-num vf" aria-hidden="true">01</span><p>先画链路，再碰界面。</p></li>
+          <li style="--i: 1"><span class="principle-num vf" aria-hidden="true">02</span><p>字段与状态说人话，和一线用语一致。</p></li>
+          <li style="--i: 2"><span class="principle-num vf" aria-hidden="true">03</span><p>原型只验证一件事：能否推动下一步。</p></li>
+          <li style="--i: 3"><span class="principle-num vf" aria-hidden="true">04</span><p>AI 只接在已清晰的节点上，不替代判断。</p></li>
         </ol>
       </div>
     </section>
 
-    <section id="contact" class="section contact" aria-labelledby="contact-title">
-      <div class="section-inner reveal-block">
-        <div class="contact-panel">
-          <p class="eyebrow">联系</p>
-          <h2 id="contact-title">一起把链路理顺</h2>
-          <p class="contact-body">
-            若你在做外贸流程、样品/仓配信息，或想把现有表格收成更可行动的结构，欢迎写信。
-          </p>
-          <div class="contact-actions">
-            <a class="email-display" href="mailto:858154849@qq.com">858154849@qq.com</a>
-            <button type="button" class="btn btn-primary" data-copy-email data-email="858154849@qq.com">
-              <span class="email-pill-label">复制邮箱</span>
-              <span class="email-pill-done" hidden>已复制</span>
-            </button>
-          </div>
-        </div>
+    <!-- 5. NARRATIVE / STORY BEATS -->
+    <section id="narrative" class="section narrative" aria-labelledby="narrative-title">
+      <div class="section-inner">
+        <header class="section-head reveal-block">
+          <p class="eyebrow vf">STORY · 叙事</p>
+          <h2 id="narrative-title" class="serif">三拍：<em>连接 · 行动 · 判断</em></h2>
+        </header>
+
+        <ol class="story-beats">
+          <li class="beat reveal-beat" style="--i: 0">
+            <span class="beat-index vf" aria-hidden="true">01</span>
+            <h3 class="vf">连接：产品 · 客户 · 交付</h3>
+            <p>光纤与外贸的链路很长：询盘、样品、订单、装箱、出货。我习惯把每一段对上真实责任人与节点，减少「信息在群里漂、货在仓里等」的空档。连接做得好，交付才稳。</p>
+          </li>
+          <li class="beat reveal-beat" style="--i: 1">
+            <span class="beat-index vf" aria-hidden="true">02</span>
+            <h3 class="vf">信息 → 行动</h3>
+            <p>表格、邮件、单据本身不是工作成果——能推动下一步才是。我会把散落的状态收成可扫一眼的结构：谁该动、卡在哪、今天能推进什么。少一层转述，多一步确认。</p>
+          </li>
+          <li class="beat reveal-beat" style="--i: 2">
+            <span class="beat-index vf" aria-hidden="true">03</span>
+            <h3 class="vf">先懂业务，再选工具与 AI</h3>
+            <p>工具和 AI 是放大器。若流程本身含糊，自动化只会放大混乱。我先对齐业务语言与约束，再决定要不要上表单、看板或助手——宁可原型小、跑通，也不堆花哨。</p>
+          </li>
+        </ol>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <p>王化康 · Kyson · Sightes · <a href="mailto:858154849@qq.com">858154849@qq.com</a> · © 2026</p>
+  <!-- 6. CTA FOOTER -->
+  <footer id="contact" class="cta-footer">
+    <div class="cta-footer-inner reveal-block">
+      <p class="eyebrow vf" style="color: color-mix(in srgb, #faf6f0 80%, transparent)">HAVE A PROJECT?</p>
+      <h2 class="serif cta-title">一起把链路<em>理顺</em></h2>
+      <p class="cta-body">若你在做外贸流程、样品/仓配信息，或想把现有表格收成更可行动的结构，欢迎写信。</p>
+      <div class="cta-actions">
+        <a class="cta-email" href="mailto:858154849@qq.com">858154849@qq.com</a>
+        <button type="button" class="btn btn-cream" data-copy-email data-email="858154849@qq.com">
+          <span class="email-pill-label">Copy email</span>
+          <span class="email-pill-done" hidden>已复制</span>
+        </button>
+      </div>
     </div>
+
+    <div class="footer-marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span class="vf">产品·客户·交付&nbsp;/&nbsp;信息→行动&nbsp;/&nbsp;业务先于工具&nbsp;·&nbsp;王化康 · KYSON&nbsp;·&nbsp;</span>
+        <span class="vf">产品·客户·交付&nbsp;/&nbsp;信息→行动&nbsp;/&nbsp;业务先于工具&nbsp;·&nbsp;王化康 · KYSON&nbsp;·&nbsp;</span>
+      </div>
+    </div>
+
+    <p class="footer-copy">© 2026 王化康 · Kyson · Sightes</p>
   </footer>
 
   <script src="script.js" defer></script>
