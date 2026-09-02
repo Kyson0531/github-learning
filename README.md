@@ -1,13 +1,41 @@
-# GitHub Learning
+# Kyson Wang / 王化康 — Personal Portfolio
 
-这是我的第一个 GitHub 学习仓库。
+Single-page personal site for **Kyson Wang (王化康)** — foreign-trade and optical-fiber operations at Sightes.
 
-## 学习目标
+## Stack
 
-- 了解仓库、提交和分支
-- 学会使用 `git add`、`git commit` 和 `git push`
-- 学会创建和合并 Pull Request
+- **Next.js** (App Router) + TypeScript + Tailwind CSS
+- **GSAP** + ScrollTrigger — section reveals (transform / opacity only)
+- **Lenis** — smooth scroll, synced to the GSAP ticker
+- **Three.js** + **React Three Fiber** + **Drei** — hero fiber-optic / light-particle canvas
+- Accessibility: `prefers-reduced-motion` disables canvas + smooth scroll; canvas pauses when off-screen; DPR capped
 
-## 第一次练习
+## Information architecture
 
-创建这个 README，并把它提交到 GitHub。
+1. **Hero** — name, bilingual title, R3F abstract fiber field
+2. **About** — Sightes / trade + fiber ops
+3. **Work** — 2–3 placeholder case studies (clearly labeled)
+4. **Skills** — Outlook, Excel, supply-chain ops (not a fake React list)
+5. **Contact** — email, GitHub, X
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Production build
+
+```bash
+npm run build
+npm start
+```
+
+## Contact
+
+- Email: kyson.wang@sightestech.com
+- GitHub: [Kyson0531](https://github.com/Kyson0531)
+- X: [@Kyson0531](https://x.com/Kyson0531)
