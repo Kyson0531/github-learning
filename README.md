@@ -1,13 +1,23 @@
-# GitHub Learning
+# 王化康 · Kyson — CSS-native personal site
 
-这是我的第一个 GitHub 学习仓库。
+Static personal site for 王化康 / Kyson (Sightes · 外贸运营 · 光纤产品).
 
-## 学习目标
+## Stack
 
-- 了解仓库、提交和分支
-- 学会使用 `git add`、`git commit` 和 `git push`
-- 学会创建和合并 Pull Request
+- `index.html` + `styles.css` + minimal `script.js` (email copy only)
+- CSS View Transitions (`@view-transition`) + scroll-driven `animation-timeline: view()`
+- `prefers-reduced-motion: reduce` disables VT and scroll animations
+- No React / Three.js / GSAP / WebGL
 
-## 第一次练习
+## Preview
 
-创建这个 README，并把它提交到 GitHub。
+```bash
+python3 -m http.server 8080
+# open http://localhost:8080
+```
+
+Or open `index.html` directly in a Chromium-based browser (View Transitions + scroll-driven animations work best there).
+
+## Branch
+
+`feature/css-native-portfolio` — CSS-first alternative to the Next.js portfolio branch.
