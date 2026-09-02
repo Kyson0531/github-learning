@@ -10,8 +10,8 @@ const links = [
 
 export function Nav() {
   return (
-    <nav className="glass-nav fixed top-0 left-0 right-0 z-40">
-      <div className="mx-auto flex max-w-content items-center justify-between gap-4 page-pad py-3">
+    <nav className="glass-nav fixed top-0 left-0 right-0 z-40 h-11">
+      <div className="mx-auto flex h-full max-w-content items-center justify-between gap-4 page-pad">
         <a
           href="#"
           className="shrink-0 text-sm font-medium tracking-tight text-apple-ink transition hover:text-apple-blue"
