@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
+type ProgressRef = React.MutableRefObject<number>;
 type Ptr = React.MutableRefObject<{ x: number; y: number }>;
 
 const FIBER_COLORS = ["#5eead4", "#60a5fa", "#a78bfa", "#5eead4", "#60a5fa"];
@@ -31,33 +32,48 @@ function makeCableCurve(seed: number, index: number): THREE.CatmullRomCurve3 {
 function FiberCable({
   curve,
   color,
-  speed,
+  baseSpeed,
+  progressRef,
 }: {
   curve: THREE.CatmullRomCurve3;
   color: string;
-  speed: number;
+  baseSpeed: number;
+  progressRef: ProgressRef;
 }) {
   const glowRef = useRef<THREE.Mesh>(null);
   const glow2Ref = useRef<THREE.Mesh>(null);
+  const matRef = useRef<THREE.MeshBasicMaterial>(null);
+  const glowMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const tubeGeo = useMemo(
     () => new THREE.TubeGeometry(curve, 64, 0.012, 6, false),
     [curve]
   );
 
   useFrame((state) => {
+    const p = progressRef.current;
+    const speedMul = 0.65 + p * 1.55;
     const t = state.clock.getElapsedTime();
-    const u = (t * speed) % 1;
-    const u2 = (t * speed * 0.7 + 0.45) % 1;
-    const p = curve.getPointAt(u);
-    const p2 = curve.getPointAt(u2);
-    if (glowRef.current) glowRef.current.position.copy(p);
-    if (glow2Ref.current) glow2Ref.current.position.copy(p2);
+    const u = (t * baseSpeed * speedMul) % 1;
+    const u2 = (t * baseSpeed * speedMul * 0.7 + 0.45) % 1;
+    const pt = curve.getPointAt(u);
+    const pt2 = curve.getPointAt(u2);
+    if (glowRef.current) glowRef.current.position.copy(pt);
+    if (glow2Ref.current) glow2Ref.current.position.copy(pt2);
+
+    const cableOpacity = 0.16 + p * 0.28;
+    const glowOpacity = 0.7 + p * 0.28;
+    if (matRef.current) matRef.current.opacity = cableOpacity;
+    if (glowMatRef.current) glowMatRef.current.opacity = glowOpacity;
+
+    const scale = 0.85 + p * 0.55;
+    if (glowRef.current) glowRef.current.scale.setScalar(scale);
   });
 
   return (
     <group>
       <mesh geometry={tubeGeo}>
         <meshBasicMaterial
+          ref={matRef}
           color={color}
           transparent
           opacity={0.22}
@@ -68,6 +84,7 @@ function FiberCable({
       <mesh ref={glowRef}>
         <sphereGeometry args={[0.055, 12, 12]} />
         <meshBasicMaterial
+          ref={glowMatRef}
           color={color}
           transparent
           opacity={0.95}
@@ -89,9 +106,10 @@ function FiberCable({
   );
 }
 
-function ParticleField() {
+function ParticleField({ progressRef }: { progressRef: ProgressRef }) {
   const pointsRef = useRef<THREE.Points>(null);
-  const count = 280;
+  const matRef = useRef<THREE.PointsMaterial>(null);
+  const count = 320;
 
   const { positions, colors } = useMemo(() => {
     const positions = new Float32Array(count * 3);
@@ -126,8 +144,14 @@ function ParticleField() {
 
   useFrame((state) => {
     if (!pointsRef.current) return;
+    const p = progressRef.current;
     const t = state.clock.getElapsedTime();
-    pointsRef.current.rotation.y = t * 0.04;
+    pointsRef.current.rotation.y = t * (0.03 + p * 0.08);
+    pointsRef.current.rotation.x = Math.sin(t * 0.2) * 0.04 * p;
+    if (matRef.current) {
+      matRef.current.opacity = 0.45 + p * 0.45;
+      matRef.current.size = 0.022 + p * 0.018;
+    }
   });
 
   return (
@@ -137,6 +161,7 @@ function ParticleField() {
         <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <pointsMaterial
+        ref={matRef}
         size={0.028}
         vertexColors
         transparent
@@ -149,9 +174,16 @@ function ParticleField() {
   );
 }
 
-function Scene({ pointer }: { pointer: Ptr }) {
+function Scene({
+  pointer,
+  progressRef,
+}: {
+  pointer: Ptr;
+  progressRef: ProgressRef;
+}) {
   const root = useRef<THREE.Group>(null);
   const smoothed = useRef({ x: 0, y: 0 });
+  const { scene } = useThree();
 
   const cables = useMemo(
     () =>
@@ -163,40 +195,67 @@ function Scene({ pointer }: { pointer: Ptr }) {
     []
   );
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
+    const p = progressRef.current;
     const s = smoothed.current;
     const lerp = 1 - Math.exp(-delta * 4.5);
     s.x += (pointer.current.x - s.x) * lerp;
     s.y += (pointer.current.y - s.y) * lerp;
 
     if (root.current) {
-      root.current.rotation.y = s.x * 0.28;
-      root.current.rotation.x = s.y * 0.16;
+      const spin = p * 0.55;
+      root.current.rotation.y =
+        s.x * 0.28 + spin + state.clock.getElapsedTime() * (0.02 + p * 0.06);
+      root.current.rotation.x = s.y * 0.16 + p * 0.12;
       root.current.position.x = s.x * 0.35;
       root.current.position.y = s.y * 0.2;
+      root.current.scale.setScalar(0.92 + p * 0.18);
+    }
+
+    const fog = scene.fog as THREE.Fog | null;
+    if (fog) {
+      fog.near = 4.5 - p * 1.2;
+      fog.far = 14 - p * 3;
     }
   });
 
   return (
     <group ref={root}>
-      <ParticleField />
+      <ParticleField progressRef={progressRef} />
       {cables.map((c, i) => (
-        <FiberCable key={i} curve={c.curve} color={c.color} speed={c.speed} />
+        <FiberCable
+          key={i}
+          curve={c.curve}
+          color={c.color}
+          baseSpeed={c.speed}
+          progressRef={progressRef}
+        />
       ))}
       <ambientLight intensity={0.15} />
     </group>
   );
 }
 
-function CameraRig() {
+function CameraRig({ progressRef }: { progressRef: ProgressRef }) {
   const { camera } = useThree();
   useEffect(() => {
     camera.position.set(0, 0.15, 5.4);
   }, [camera]);
+
+  useFrame((_, delta) => {
+    const p = progressRef.current;
+    // Scrub: pull in then ease — video-scrub feel
+    const targetZ = 5.6 - p * 1.35 + Math.sin(p * Math.PI) * 0.15;
+    const targetY = 0.15 + p * 0.25;
+    camera.position.z += (targetZ - camera.position.z) * (1 - Math.exp(-delta * 5));
+    camera.position.y += (targetY - camera.position.y) * (1 - Math.exp(-delta * 5));
+    camera.lookAt(0, 0, 0);
+  });
+
   return null;
 }
 
-export function HeroCanvas() {
+export function HeroCanvas({ progressRef }: { progressRef: ProgressRef }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const pointer = useRef({ x: 0, y: 0 });
   const [visible, setVisible] = useState(true);
@@ -248,8 +307,8 @@ export function HeroCanvas() {
       >
         <color attach="background" args={["#07080b"]} />
         <fog attach="fog" args={["#07080b", 4.5, 14]} />
-        <CameraRig />
-        <Scene pointer={pointer} />
+        <CameraRig progressRef={progressRef} />
+        <Scene pointer={pointer} progressRef={progressRef} />
       </Canvas>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(7,8,11,0.35)_70%,rgba(7,8,11,0.85)_100%)]" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950/30 via-transparent to-ink-950" />

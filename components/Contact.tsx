@@ -3,8 +3,8 @@ import { SectionReveal } from "@/components/SectionReveal";
 const links = [
   {
     label: "Email",
-    value: "kyson.wang@sightestech.com",
-    href: "mailto:kyson.wang@sightestech.com",
+    value: "858154849@qq.com",
+    href: "mailto:858154849@qq.com",
   },
   {
     label: "GitHub",
