@@ -10,7 +10,7 @@ const HeroCanvas = dynamic(
 
 export function Hero() {
   return (
-    <header className="relative min-h-[100svh] overflow-hidden bg-apple-bg">
+    <header className="relative min-h-[100svh] overflow-hidden bg-transparent">
       <HeroCanvas />
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-content flex-col justify-center page-pad pb-[18vh] pt-[22vh] md:pb-[20vh] md:pt-[24vh]">

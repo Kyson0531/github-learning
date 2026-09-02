@@ -6,7 +6,7 @@ import { CopyEmailButton, EMAIL } from "@/components/CopyEmail";
 export function Contact() {
   return (
     <SectionReveal id="contact" className="mx-auto max-w-content page-pad section-y">
-      <div className="rounded-3xl border border-black/[0.08] bg-apple-surface p-8 shadow-soft md:p-12">
+      <div className="glass-panel rounded-3xl p-8 md:p-12">
         <p className="text-xs font-medium uppercase tracking-editorial text-apple-secondary">
           联系
         </p>

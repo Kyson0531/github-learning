@@ -39,10 +39,10 @@ export function Work() {
         {cases.map((c) => (
           <li
             key={c.title}
-            className="rounded-2xl border border-black/[0.08] bg-apple-surface p-6 shadow-soft transition hover:border-black/[0.12]"
+            className="glass-panel rounded-2xl p-6 transition hover:bg-white/[0.78]"
           >
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-black/[0.08] bg-apple-bg px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-editorial text-apple-secondary">
+              <span className="rounded-full border border-black/[0.06] bg-white/50 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-editorial text-apple-secondary">
                 {c.tag}
               </span>
               <span className="text-[10px] uppercase tracking-editorial text-apple-secondary">
