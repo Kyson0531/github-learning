@@ -16,9 +16,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kyson Wang / 王化康 — Portfolio",
+  title: "王化康 · Kyson — Sightes 外贸运营",
   description:
-    "Personal portfolio of Kyson Wang (王化康) — foreign-trade and optical fiber operations at Sightes.",
+    "王化康（Kyson）— Sightes 外贸运营 · 光纤产品。把产品、客户与交付连成清晰链路。",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
+    <html lang="zh-CN" className={`${sans.variable} ${mono.variable}`}>
       <body className="font-sans bg-ink-950 text-mist-100 antialiased">
         <div className="grain" aria-hidden />
         <SmoothScroll>{children}</SmoothScroll>
